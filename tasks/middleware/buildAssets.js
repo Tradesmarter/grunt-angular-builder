@@ -14,7 +14,7 @@ var util = require ('../lib/gruntUtil')
   , path = require ('path')
   , fs = require ('fs');
 
-var MATCH_URLS = /\burl\s*\(\s*('|")?\s*(.*?)\s*\1?\s*\)/gi;
+var MATCH_URLS = /\burl\s*\(\s*('|")?\s*(.*?)(?:[\?#]+.*)?\s*\1?\s*\)/gi;
 
 //----------------------------------------------------------------------------------------------------------------------
 // OPTIONS
@@ -136,7 +136,7 @@ function BuildAssetsMiddleware (context)
     var match;
     while ((match = MATCH_URLS.exec (sourceCode))) {
       var url = match[2];
-      if (!url.match (/^http/i) && url[0] !== '/') { // Skip absolute URLs
+      if (!url.match (/^http/i) && url[0] !== '/' && !url.match(/^data:/) ) { // Skip absolute and data URLs
         var absSrcPath = path.resolve (basePath, url)
           , absDestPath = path.resolve (targetPath, options.targetDir, url)
           , relDestPath = path.relative (targetPath, absDestPath);
