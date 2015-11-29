@@ -110,9 +110,9 @@ TaskOptions.prototype = {
     './middleware/exportSourcePaths',
     './middleware/includeRequiredScripts',
     './middleware/buildForeignScripts',
+    './middleware/exportRequiredStylesheets',
     './middleware/makeDebugBuild',
     './middleware/makeReleaseBuild',
-    './middleware/exportRequiredStylesheets',
     './middleware/exportRequiredTemplates',
     './middleware/buildAssets'
   ]

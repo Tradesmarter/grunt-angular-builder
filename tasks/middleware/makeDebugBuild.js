@@ -103,7 +103,7 @@ function MakeDebugBuildMiddleware (context)
   this.trace = function (/*ModuleDef*/ module)
   {
     if (!options.enabled) return;
-
+    
     var rep = options.rebaseDebugUrls;
     module.filePaths ().forEach (function (path)
     {
@@ -124,9 +124,36 @@ function MakeDebugBuildMiddleware (context)
 
     if (!options.enabled) return;
 
-    /** @type {string[]} */
+    /** @type {string[]} */    
+    var styleInjector = ['(function(linkUrls) {',
+        'var head = document.getElementsByTagName("head")[0];',
+        
+        'for (var i = 0; i<linkUrls.length; i++) {',
+        '    var l = document.createElement("link");',
+        '    l.rel = "stylesheet";',
+        '    l.href = linkUrls[i];',
+       
+        '    head.appendChild(l);',
+        '}',
+    '})(['];
+    
+    var styleSheets = context.grunt.option ('temp.__styleSheetPaths');
+    var rep = options.rebaseDebugUrls;
+    var styleUrls = [];
+    styleSheets.forEach (function(path)
+    {
+        if (context.outputtedFiles[path] && context.outputtedFiles[path] !== module.name)
+          return;
+        context.outputtedFiles[path] = true;
+        if (rep)
+          for (var i = 0, m = rep.length; i < m; ++i)
+            path = path.replace (rep[i].match, rep[i].replaceWith);
+        if (path) // Ignore empty path; it means that this middleware should not output a link tag.
+            styleUrls.push ("'" + path + "'");
+    });
+    
     var output = ['document.write (\''];
-
+    
     if (context.prependOutput)
       output.push (context.prependOutput);
 
@@ -137,6 +164,6 @@ function MakeDebugBuildMiddleware (context)
       output.push (context.appendOutput);
 
     output.push ('\');');
-    util.writeFile (targetScript, output.join ('\\\n'));
+    util.writeFile (targetScript, styleInjector.join('\n') + styleUrls.join(',\n') + ']);\n' + output.join ('\\\n'));
   };
 }

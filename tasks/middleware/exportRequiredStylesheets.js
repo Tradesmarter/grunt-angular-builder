@@ -79,11 +79,14 @@ function ExportRequiredStylesheetsMiddleware (context)
 
   this.trace = function (/*ModuleDef*/ module)
   {
+      console.log('ers::trace', module.headPath);
     scan (module.head, module.headPath);
     module.bodies.forEach (function (path, i)
     {
       scan (path, module.bodyPaths[i]);
     });
+    
+    context.grunt.option('temp.__styleSheetPaths', paths);
   };
 
   this.build = function (targetScript)
@@ -107,13 +110,16 @@ function ExportRequiredStylesheetsMiddleware (context)
   {
     /* jshint -W083 */
     var match;
+    var tempPaths = [];
     while ((match = MATCH_DIRECTIVE.exec (sourceCode))) {
       match[1].split (',').forEach (function (s)
       {
         var url = s.match (/(["'])(.*?)\1/)[2];
-        paths.push (path.normalize (path.dirname (filePath) + '/' + url));
+        tempPaths.push (path.normalize (path.dirname (filePath) + '/' + url));
       });
     }
+    
+    Array.prototype.unshift.apply(paths, tempPaths);
   }
 
 }
