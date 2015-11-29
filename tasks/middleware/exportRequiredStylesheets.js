@@ -79,7 +79,6 @@ function ExportRequiredStylesheetsMiddleware (context)
 
   this.trace = function (/*ModuleDef*/ module)
   {
-      console.log('ers::trace', module.headPath);
     scan (module.head, module.headPath);
     module.bodies.forEach (function (path, i)
     {
