@@ -478,11 +478,6 @@ function scanForOptimization (context)
       disableOptimizationsForChildrenOf (module);
       return true;
     }
-    for (var i = 0, m = module.requires.length, any = false; i < m; ++i)
-      if (scan (module.requires[i])) //Note: scan() still must be called for ALL submodules!
-        any = true;
-    if (any)
-      module.nonOptimizedContainer = true;
     return false;
   }
 
