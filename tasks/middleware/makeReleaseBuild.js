@@ -157,8 +157,8 @@ function MakeReleaseBuildMiddleware (context)
   context.listen (ContextEvent.ON_BEFORE_DEPS, function (/*ModuleDef*/ module)
   {
     if (options.enabled) {
-      if (module.nonOptimizedContainer)
-        traceOutput.push ('(function () {\n');
+      // if (module.nonOptimizedContainer)
+//         traceOutput.push ('(function () {\n');
     }
   });
 
@@ -176,8 +176,8 @@ function MakeReleaseBuildMiddleware (context)
   {
     if (!options.enabled) return;
 
-    if (module.nonOptimizedContainer)
-      traceOutput.push ('\n}) ();');
+    // if (module.nonOptimizedContainer)
+//       traceOutput.push ('\n}) ();');
 
     // Fist process the head module declaration.
     if (!module.head)
